@@ -39,9 +39,11 @@ pip install numpy
 │   └── hgnn_models.py         # Hypergraph neural network models
 ├── preprocess/
 │   ├── cpg_generate.py        # CPG generation from source code
-│   ├── graph_dataset.py       # Dataset creation and graph preprocessing
-│   ├── process_dot.py         # DOT file parsing and feature extraction
-│   ├── dots/                  # Generated CPG DOT files
+│   ├── hcpg_generate.py       # HCPG generation from CPG
+│   ├── dot_embedding.py       # Dataset creation and graph preprocessing
+│   ├── parse_dot.py           # DOT file parsing and feature extraction
+│   ├── dots-cpg/              # Generated CPG DOT files
+│   ├── dots-cpg/              # Generated HCPG DOT files
 │   ├── source/                # Source code files
 │   ├── workspace/             # Joern workspace
 ├── logs/                      # Training logs and outputs
@@ -92,21 +94,28 @@ This will:
 - Parse the JSON dataset
 - Generate C source files
 - Use Joern to create CPGs
-- Output DOT files to `preprocess/dots/`
+- Output CPG DOT files to `preprocess/dots-cpg/`
 
 ### Step 2: Create HCPG Dataset
 ```bash
 cd preprocess
-python graph_dataset.py
+python hcpg_generate.py
 ```
 This will:
 - Parse DOT files
 - Apply node pruning strategies
 - Generate control and data hyperedges
-- Get HCPGs
-- Save the embedding as `pruned_cpg_dataset.pkl`
+- Output HCPG DOT files to `preprocess/dots-hcpg/`
 
-### Step 3: Train Models
+### Step 3: HCPG Embedding
+```bash
+cd preprocess
+python dot_embedding.py
+```
+This will:
+- Save the embedding vectors as `hcpg_dataset.pkl`
+
+### Step 4: Train Models
 ```bash
 # Train with GCN
 python main.py --model GCN --batch 128 --lr 1e-4 --dropout 0.4 --epoch 500
@@ -140,7 +149,7 @@ python main.py --model HGCN --batch 64 --lr 1e-4 --dropout 0.5 --epoch 400
 - **GGNN**: Gated Graph Neural Network
 
 ### Hypergraph Models
-- **HGCN**: Hypergraph Convolutional Network with advanced features:
+- **TAF-HGCN**: Hypergraph Convolutional Network with advanced features:
   - Multi-scale pooling (mean + max)
   - Residual connections
   - Layer normalization
@@ -161,8 +170,10 @@ The framework implements sophisticated graph preprocessing strategies:
 - Consolidates duplicate TYPE_REF and METHOD_RETURN nodes
 
 ### 3. Control Hyperedge Generation
+- Merge homogeneous control dependencies to get control hyperedges.
 
 ### 4. Data Hyperedge Generation
+- Merge homogeneous data dependencies to get data hyperedges.
 
 ### 5. Feature Engineering
 - Flow-sensitive hypergraph learning
