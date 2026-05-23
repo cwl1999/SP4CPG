@@ -1,0 +1,4 @@
+# Optional real CodeBERT runtime. Install this in the same environment if you want real CodeBERT training/inference.
+torch
+transformers>=4.35
+scikit-learn>=1.3
