@@ -1,0 +1,6 @@
+# Optional real HGCN runtime. Install this in the same environment if you want real HGCN training/inference.
+torch
+torch-geometric
+numpy
+scikit-learn
+pydot>=1.4.2
