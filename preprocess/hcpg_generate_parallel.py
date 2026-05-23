@@ -1,3 +1,4 @@
+from __future__ import annotations
 from parse_dot import parse_dot_file_enhanced, CodeGraphEncoder
 import os
 import torch
